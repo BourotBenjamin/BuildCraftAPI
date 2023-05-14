@@ -1,24 +1,22 @@
 package buildcraft.api.blocks;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import buildcraft.api.core.BCDebugging;
 import buildcraft.api.core.BCLog;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Vector3d;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 /** Provides a simple way to paint a single block, iterating through all {@link ICustomPaintHandler}'s that are
  * registered for the block. */
@@ -43,11 +41,11 @@ public enum CustomPaintHelper {
 
     /** Register's a paint handler for every class of a given block. */
     public void registerHandlerForAll(Class<? extends Block> blockClass, ICustomPaintHandler handler) {
-        for (Block block : Block.REGISTRY) {
+        for (Block block : ForgeRegistries.BLOCKS) {
             Class<? extends Block> foundClass = block.getClass();
             if (blockClass.isAssignableFrom(foundClass)) {
                 if (DEBUG) {
-                    BCLog.logger.info("[api.painting] Found an assignable block " + block.getRegistryName() + " (" + foundClass + ") for " + blockClass);
+                    BCLog.logger.info("[api.painting] Found an assignable block " + block.getName() + " (" + foundClass + ") for " + blockClass);
                 }
                 registerHandlerInternal(block, handler);
             }
@@ -57,10 +55,10 @@ public enum CustomPaintHelper {
     public void registerHandler(Block block, ICustomPaintHandler handler) {
         if (registerHandlerInternal(block, handler)) {
             if (DEBUG) {
-                BCLog.logger.info("[api.painting] Setting a paint handler for block " + block.getRegistryName() + "(" + handler.getClass() + ")");
+                BCLog.logger.info("[api.painting] Setting a paint handler for block " + block.getName() + "(" + handler.getClass() + ")");
             }
         } else if (DEBUG) {
-            BCLog.logger.info("[api.painting] Adding another paint handler for block " + block.getRegistryName() + "(" + handler.getClass() + ")");
+            BCLog.logger.info("[api.painting] Adding another paint handler for block " + block.getName() + "(" + handler.getClass() + ")");
         }
     }
 
@@ -77,7 +75,7 @@ public enum CustomPaintHelper {
     }
 
     /** Attempts to paint a block at the given position. Basically iterates through all registered paint handlers. */
-    public EnumActionResult attemptPaintBlock(World world, BlockPos pos, IBlockState state, Vec3d hitPos, @Nullable EnumFacing hitSide, @Nullable EnumDyeColor paint) {
+    public Event.Result attemptPaintBlock(Level world, BlockPos pos, BlockState state, Vector3d hitPos, @Nullable FaceInfo hitSide, @Nullable DyeColor paint) {
         Block block = state.getBlock();
         if (block instanceof ICustomPaintHandler) {
             return ((ICustomPaintHandler) block).attemptPaint(world, pos, state, hitPos, hitSide, paint);
@@ -87,29 +85,31 @@ public enum CustomPaintHelper {
             return defaultAttemptPaint(world, pos, state, hitPos, hitSide, paint);
         }
         for (ICustomPaintHandler handler : custom) {
-            EnumActionResult result = handler.attemptPaint(world, pos, state, hitPos, hitSide, paint);
-            if (result != EnumActionResult.PASS) {
+            Event.Result result = handler.attemptPaint(world, pos, state, hitPos, hitSide, paint);
+            if (result != Event.Result.ALLOW) {
                 return result;
             }
         }
         return defaultAttemptPaint(world, pos, state, hitPos, hitSide, paint);
     }
 
-    private EnumActionResult defaultAttemptPaint(World world, BlockPos pos, IBlockState state, Vec3d hitPos, EnumFacing hitSide, @Nullable EnumDyeColor paint) {
+    private Event.Result defaultAttemptPaint(Level world, BlockPos pos, BlockState state, Vector3d hitPos, FaceInfo hitSide, @Nullable DyeColor paint) {
         for (ICustomPaintHandler handler : allHandlers) {
-            EnumActionResult result = handler.attemptPaint(world, pos, state, hitPos, hitSide, paint);
-            if (result != EnumActionResult.PASS) {
+            Event.Result result = handler.attemptPaint(world, pos, state, hitPos, hitSide, paint);
+            if (result != Event.Result.ALLOW) {
                 return result;
             }
         }
         if (paint == null) {
-            return EnumActionResult.FAIL;
+            return Event.Result.DENY;
         }
         Block b = state.getBlock();
-        if (b.recolorBlock(world, pos, hitSide, paint)) {
-            return EnumActionResult.SUCCESS;
+        /* TODO : Override main game colors
+        if (b.(world, pos, hitSide, paint)) {
+            return  Event.Result.ALLOW;
         } else {
-            return EnumActionResult.FAIL;
-        }
+        */
+            return Event.Result.DENY;
+        //}
     }
 }

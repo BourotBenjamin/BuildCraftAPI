@@ -1,9 +1,8 @@
 package buildcraft.api.transport.pipe;
 
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public interface IPipe extends ICapabilityProvider {
@@ -15,19 +14,19 @@ public interface IPipe extends ICapabilityProvider {
 
     PipeFlow getFlow();
 
-    EnumDyeColor getColour();
+    DyeColor getColour();
 
-    void setColour(EnumDyeColor colour);
+    void setColour(DyeColor colour);
 
     void markForUpdate();
 
-    TileEntity getConnectedTile(EnumFacing side);
+    BlockEntity getConnectedTile(FaceInfo side);
 
-    IPipe getConnectedPipe(EnumFacing side);
+    IPipe getConnectedPipe(FaceInfo side);
 
-    boolean isConnected(EnumFacing side);
+    boolean isConnected(FaceInfo side);
 
-    ConnectedType getConnectedType(EnumFacing side);
+    ConnectedType getConnectedType(FaceInfo side);
 
     enum ConnectedType {
         TILE,

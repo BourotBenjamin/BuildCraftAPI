@@ -4,10 +4,10 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.fuels;
 
-import java.util.Collection;
-
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Collection;
 
 public interface IFuelManager {
     <F extends IFuel> F addFuel(F fuel);

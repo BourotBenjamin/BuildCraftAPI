@@ -2,9 +2,11 @@ package buildcraft.api;
 
 import net.minecraft.item.Item;
 
+import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 import buildcraft.api.items.FluidItemDrops;
+import net.minecraftforge.registries.ObjectHolder;
 
 public class BCItems {
 

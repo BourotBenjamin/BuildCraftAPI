@@ -1,14 +1,13 @@
 package buildcraft.api.transport.pipe;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import buildcraft.api.transport.pluggable.IPlugDynamicRenderer;
 import buildcraft.api.transport.pluggable.IPluggableStaticBaker;
 import buildcraft.api.transport.pluggable.PipePluggable;
 import buildcraft.api.transport.pluggable.PluggableModelKey;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum PipeApiClient {
     INSTANCE;
 

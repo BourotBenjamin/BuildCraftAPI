@@ -1,10 +1,9 @@
 package buildcraft.api.enums;
 
-import net.minecraft.util.IStringSerializable;
-
 import buildcraft.api.core.IEngineType;
+import net.minecraft.util.StringRepresentable;
 
-public enum EnumEngineType implements IStringSerializable, IEngineType {
+public enum EnumEngineType implements StringRepresentable, IEngineType {
     WOOD("core", "wood"),
     STONE("energy", "stone"),
     IRON("energy", "iron"),
@@ -26,7 +25,7 @@ public enum EnumEngineType implements IStringSerializable, IEngineType {
     }
 
     @Override
-    public String getName() {
+    public String getSerializedName() {
         return unlocalizedTag;
     }
 

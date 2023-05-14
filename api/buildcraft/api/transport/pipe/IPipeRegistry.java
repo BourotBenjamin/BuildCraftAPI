@@ -1,12 +1,11 @@
 package buildcraft.api.transport.pipe;
 
-import java.util.Map;
-import java.util.function.Consumer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public interface IPipeRegistry {
     PipeDefinition getDefinition(ResourceLocation identifier);
@@ -28,8 +27,7 @@ public interface IPipeRegistry {
     /** Identical to {@link #createItemForPipe(PipeDefinition)}, but doesn't require registering tags with buildcraft
      * lib in order to register.
      * 
-     * @param postCreate A function to call in order to setup the {@link Item#setRegistryName(ResourceLocation)} and
-     *            {@link Item#setUnlocalizedName(String)}. */
+     * @param postCreate A function to call in order to setup the names. */
     IItemPipe createUnnamedItemForPipe(PipeDefinition definition, Consumer<Item> postCreate);
 
     Iterable<PipeDefinition> getAllRegisteredPipes();

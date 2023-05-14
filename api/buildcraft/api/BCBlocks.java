@@ -2,7 +2,9 @@ package buildcraft.api;
 
 import net.minecraft.block.Block;
 
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.ObjectHolder;
 
 public class BCBlocks {
 

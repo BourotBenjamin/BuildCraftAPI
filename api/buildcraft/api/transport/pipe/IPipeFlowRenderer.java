@@ -1,6 +1,6 @@
 package buildcraft.api.transport.pipe;
 
-import net.minecraft.client.renderer.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 
 public interface IPipeFlowRenderer<F extends PipeFlow> {
     /** @param flow The flow to render

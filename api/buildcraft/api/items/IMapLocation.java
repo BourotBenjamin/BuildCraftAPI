@@ -1,15 +1,13 @@
 package buildcraft.api.items;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-
 import buildcraft.api.core.IBox;
 import buildcraft.api.core.IZone;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /** Created by asie on 2/28/15. */
 public interface IMapLocation extends INamedItem {
@@ -25,7 +23,7 @@ public interface IMapLocation extends INamedItem {
         public final int meta = ordinal();
 
         public static MapLocationType getFromStack(@Nonnull ItemStack stack) {
-            int dam = stack.getItemDamage();
+            int dam = stack.getDamageValue();
             if (dam < 0 || dam >= values().length) {
                 return MapLocationType.CLEAN;
             }
@@ -33,7 +31,7 @@ public interface IMapLocation extends INamedItem {
         }
 
         public void setToStack(@Nonnull ItemStack stack) {
-            stack.setItemDamage(meta);
+            stack.setDamageValue(meta);
         }
     }
 
@@ -65,5 +63,5 @@ public interface IMapLocation extends INamedItem {
      * 
      * @param stack
      * @return The side of the spot. */
-    EnumFacing getPointSide(@Nonnull ItemStack stack);
+    FaceInfo getPointSide(@Nonnull ItemStack stack);
 }

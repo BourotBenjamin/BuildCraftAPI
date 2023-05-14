@@ -4,11 +4,10 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.core;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 /** This class is used whenever stacks needs to be stored as keys. */
@@ -30,20 +29,22 @@ public final class StackKey {
     }
 
     public static StackKey stack(Item item, int amount, int damage) {
-        return new StackKey(new ItemStack(item, amount, damage));
+        ItemStack stack = new ItemStack(item, amount);
+        stack.setDamageValue(damage);
+        return new StackKey(stack);
     }
 
     public static StackKey stack(Block block, int amount, int damage) {
-        return new StackKey(new ItemStack(block, amount, damage));
+        ItemStack stack = new ItemStack(block, amount);
+        stack.setDamageValue(damage);
+        return new StackKey(stack);
     }
 
     public static StackKey stack(Item item) {
-        return new StackKey(new ItemStack(item, 1, 0));
+        return stack(item, 1, 0);
     }
 
-    public static StackKey stack(Block block) {
-        return new StackKey(new ItemStack(block, 1, 0));
-    }
+    public static StackKey stack(Block block) { return stack(block, 1, 0); }
 
     public static StackKey stack(ItemStack itemStack) {
         return new StackKey(itemStack);
@@ -74,13 +75,13 @@ public final class StackKey {
             return false;
         }
         if (stack != null) {
-            if (stack.getItem() != k.stack.getItem() || stack.getHasSubtypes() && stack.getItemDamage() != k.stack.getItemDamage() || !objectsEqual(
-                    stack.getTagCompound(), k.stack.getTagCompound())) {
+            if (stack.getItem() != k.stack.getItem() || stack.getDamageValue() != k.stack.getDamageValue() || !objectsEqual(
+                    stack.getTag(), k.stack.getTag())) {
                 return false;
             }
         }
         if (fluidStack != null) {
-            if (!fluidStack.isFluidEqual(k.fluidStack) || fluidStack.amount != k.fluidStack.amount) {
+            if (!fluidStack.isFluidEqual(k.fluidStack) || fluidStack.getAmount() != k.fluidStack.getAmount()) {
                 return false;
             }
         }
@@ -92,14 +93,14 @@ public final class StackKey {
         int result = 7;
         if (stack != null) {
             result = 31 * result + stack.getItem().hashCode();
-            result = 31 * result + stack.getItemDamage();
-            result = 31 * result + objectHashCode(stack.getTagCompound());
+            result = 31 * result + stack.getDamageValue();
+            result = 31 * result + objectHashCode(stack.getTag());
         }
         result = 31 * result + 7;
         if (fluidStack != null) {
-            result = 31 * result + fluidStack.getFluid().getName().hashCode();
-            result = 31 * result + fluidStack.amount;
-            result = 31 * result + objectHashCode(fluidStack.tag);
+            result = 31 * result + fluidStack.getFluid().getFluidType().hashCode();
+            result = 31 * result + fluidStack.getAmount();
+            result = 31 * result + objectHashCode(fluidStack.getTag());
         }
         return result;
     }

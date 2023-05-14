@@ -1,13 +1,11 @@
 package buildcraft.api.transport.pipe;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.ModLoadingContext;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
 
 public final class PipeDefinition {
     public final ResourceLocation identifier;
@@ -63,7 +61,7 @@ public final class PipeDefinition {
 
     @FunctionalInterface
     public interface IPipeLoader {
-        PipeBehaviour loadBehaviour(IPipe t, NBTTagCompound u);
+        PipeBehaviour loadBehaviour(IPipe t, CompoundTag u);
     }
 
     public static class PipeDefinitionBuilder {
@@ -100,12 +98,7 @@ public final class PipeDefinition {
         }
 
         private static String getActiveModId() {
-            ModContainer mod = Loader.instance().activeModContainer();
-            if (mod == null) {
-                throw new IllegalStateException(
-                    "Cannot interact with PipeDefinition outside of an actively scoped mod!");
-            }
-            return mod.getModId();
+            return ModLoadingContext.get().getActiveContainer().getModId();
         }
 
         public PipeDefinitionBuilder id(String post) {

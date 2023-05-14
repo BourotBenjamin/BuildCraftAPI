@@ -1,16 +1,13 @@
 package buildcraft.api.mj;
 
-import java.text.DecimalFormat;
+import buildcraft.api.core.CapabilitiesHelper;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.Capability;
+import org.joml.Vector3d;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
-import net.minecraftforge.common.capabilities.Capability;
-
-import buildcraft.api.core.CapabilitiesHelper;
+import java.text.DecimalFormat;
 
 public class MjAPI {
 
@@ -54,13 +51,13 @@ public class MjAPI {
     public enum NullaryEffectManager implements IMjEffectManager {
         INSTANCE;
         @Override
-        public void createPowerLossEffect(World world, Vec3d center, long microJoulesLost) {}
+        public void createPowerLossEffect(Level world, Vector3d center, long microJoulesLost) {}
 
         @Override
-        public void createPowerLossEffect(World world, Vec3d center, EnumFacing direction, long microJoulesLost) {}
+        public void createPowerLossEffect(Level world, Vector3d center, FaceInfo direction, long microJoulesLost) {}
 
         @Override
-        public void createPowerLossEffect(World world, Vec3d center, Vec3d direction, long microJoulesLost) {}
+        public void createPowerLossEffect(Level world, Vector3d center, Vector3d direction, long microJoulesLost) {}
     }
     // @formatter:on
 

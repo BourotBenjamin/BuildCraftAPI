@@ -1,6 +1,6 @@
 package buildcraft.api.library;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 @Deprecated
 public abstract class LibraryTypeHandler {

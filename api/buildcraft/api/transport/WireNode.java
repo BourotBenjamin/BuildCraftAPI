@@ -3,6 +3,8 @@ package buildcraft.api.transport;
 import java.util.EnumMap;
 import java.util.Map;
 
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.BlockPos;
@@ -38,22 +40,22 @@ public class WireNode {
         return "(" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ", " + part + ")";
     }
 
-    public WireNode offset(EnumFacing face) {
+    public WireNode offset(FaceInfo face) {
         int nx = (part.x == AxisDirection.POSITIVE ? 1 : 0) + face.getFrontOffsetX();
         int ny = (part.y == AxisDirection.POSITIVE ? 1 : 0) + face.getFrontOffsetY();
         int nz = (part.z == AxisDirection.POSITIVE ? 1 : 0) + face.getFrontOffsetZ();
         EnumWirePart nPart = EnumWirePart.get(nx, ny, nz);
         if (nx < 0 || ny < 0 || nz < 0 || nx > 1 || ny > 1 || nz > 1) {
-            return new WireNode(pos.offset(face), nPart);
+            return new WireNode(pos.offset(face.), nPart);
         } else {
             return new WireNode(pos, nPart);
         }
     }
 
-    public Map<EnumFacing, WireNode> getAllPossibleConnections() {
-        Map<EnumFacing, WireNode> map = new EnumMap<>(EnumFacing.class);
+    public Map<FaceInfo, WireNode> getAllPossibleConnections() {
+        Map<FaceInfo, WireNode> map = new EnumMap<>(FaceInfo.class);
 
-        for (EnumFacing face : EnumFacing.VALUES) {
+        for (FaceInfo face : FaceInfo.values()) {
             map.put(face, offset(face));
         }
         return map;

@@ -1,28 +1,28 @@
 package buildcraft.api.schematics;
 
-import javax.annotation.Nonnull;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.WorldData;
+import net.minecraftforge.common.extensions.IForgeBlockState;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import javax.annotation.Nonnull;
 
 public class SchematicBlockContext {
     @Nonnull
-    public final World world;
+    public final WorldData world;
     @Nonnull
     public final BlockPos basePos;
     @Nonnull
     public final BlockPos pos;
     @Nonnull
-    public final IBlockState blockState;
+    public final IForgeBlockState blockState;
     @Nonnull
     public final Block block;
 
-    public SchematicBlockContext(@Nonnull World world,
+    public SchematicBlockContext(@Nonnull WorldData world,
                                  @Nonnull BlockPos basePos,
                                  @Nonnull BlockPos pos,
-                                 @Nonnull IBlockState blockState,
+                                 @Nonnull IForgeBlockState blockState,
                                  @Nonnull Block block) {
         this.world = world;
         this.basePos = basePos;

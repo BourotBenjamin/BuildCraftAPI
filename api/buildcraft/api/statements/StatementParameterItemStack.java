@@ -4,22 +4,18 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.statements;
 
-import java.util.List;
-import java.util.Objects;
+import buildcraft.api.core.render.ISprite;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
-
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextFormatting;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import buildcraft.api.core.render.ISprite;
+import java.util.List;
+import java.util.Objects;
 
 public class StatementParameterItemStack implements IStatementParameter {
     // needed because ItemStack.EMPTY doesn't have @Nonnull applied to it :/
@@ -47,8 +43,8 @@ public class StatementParameterItemStack implements IStatementParameter {
         this.stack = stack;
     }
 
-    public StatementParameterItemStack(NBTTagCompound nbt) {
-        ItemStack read = new ItemStack(nbt.getCompoundTag("stack"));
+    public StatementParameterItemStack(CompoundTag nbt) {
+        ItemStack read = ItemStack.of(nbt.getCompound("stack"));
         if (read.isEmpty()) {
             stack = EMPTY_STACK;
         } else {
@@ -57,11 +53,11 @@ public class StatementParameterItemStack implements IStatementParameter {
     }
 
     @Override
-    public void writeToNbt(NBTTagCompound compound) {
+    public void writeToNbt(CompoundTag compound) {
         if (!stack.isEmpty()) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
-            stack.writeToNBT(tagCompound);
-            compound.setTag("stack", tagCompound);
+            CompoundTag tagCompound = new CompoundTag();
+            stack.deserializeNBT(tagCompound);
+            compound.put("stack", tagCompound);
         }
     }
 
@@ -94,8 +90,8 @@ public class StatementParameterItemStack implements IStatementParameter {
         if (object instanceof StatementParameterItemStack) {
             StatementParameterItemStack param = (StatementParameterItemStack) object;
 
-            return ItemStack.areItemStacksEqual(stack, param.stack)
-            && ItemStack.areItemStackTagsEqual(stack, param.stack);
+            return ItemStack.isSame(stack, param.stack)
+            && ItemStack.isSameItemSameTags(stack, param.stack);
         } else {
             return false;
         }
@@ -107,24 +103,25 @@ public class StatementParameterItemStack implements IStatementParameter {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public String getDescription() {
+    @OnlyIn(Dist.CLIENT)
+    public Component getDescription() {
         throw new UnsupportedOperationException("Don't call getDescription directly!");
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public List<String> getTooltip() {
+    @OnlyIn(Dist.CLIENT)
+    public List<Component> getTooltip() {
         if (stack.isEmpty()) {
             return ImmutableList.of();
         }
-        List<String> tooltip = stack.getTooltip(null, ITooltipFlag.TooltipFlags.NORMAL);
+        List<Component> tooltip = stack.getTooltipLines(null, TooltipFlag.NORMAL);
+        /* TODO : Fix string format
         if (!tooltip.isEmpty()) {
-            tooltip.set(0, stack.getRarity().rarityColor + tooltip.get(0));
+            tooltip.set(0, stack.getRarity().color.stripFormatting() + tooltip.get(0));
             for (int i = 1; i < tooltip.size(); i++) {
                 tooltip.set(i, TextFormatting.GRAY + tooltip.get(i));
             }
-        }
+        }*/
         return tooltip;
     }
 

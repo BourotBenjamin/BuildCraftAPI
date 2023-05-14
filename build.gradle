@@ -2,17 +2,23 @@
 // For those who want the bleeding edge
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net"
         }
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath "net.minecraftforge.gradle:ForgeGradle:5.1.73"
+        classpath "com.google.guava:guava:31.1-jre"
     }
 }
-apply plugin: "net.minecraftforge.gradle.forge"
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+}
+
 
 if (gradle.startParameter.taskNames.contains("checkstyle")) {
 	apply plugin: "checkstyle"
@@ -30,20 +36,65 @@ version = config.mod_version
 group= "com.mod-buildcraft.api" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "buildcraft-api" // the name that all artifacts will use as a base. artifacts names follow this pattern: [baseName]-[appendix]-[version]-[classifier].[extension]
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    version = config.mc_version + "-" + config.forge_version
-    runDir = "run"
-
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = config.mappings_version
+    mappings channel: 'official', version: '1.19.4'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'buildcraft'
+            mods {
+                buildcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'buildcraft'
+            mods {
+                buildcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'buildcraft'
+            mods {
+                buildcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'buildcraft', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            mods {
+                buildcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
 sourceSets {
@@ -71,14 +122,14 @@ processResources
 {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "mcversion", config.mc_version + "-" + config.forge_version
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':project.version, 'mcversion':config.mc_version + "-" + config.forge_version
     }
 
     // copy everything else, thats not the mcmod.info
@@ -108,4 +159,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 artifacts {
     archives javadocJar
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.19.4-45.0.50'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.0'
+    implementation 'com.google.guava:guava:23.4-jre'
 }

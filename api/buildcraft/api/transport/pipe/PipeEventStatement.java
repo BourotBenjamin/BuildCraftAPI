@@ -1,15 +1,13 @@
 package buildcraft.api.transport.pipe;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.statements.IActionInternal;
 import buildcraft.api.statements.IActionInternalSided;
 import buildcraft.api.statements.ITriggerInternal;
 import buildcraft.api.statements.ITriggerInternalSided;
+import net.minecraft.client.renderer.FaceInfo;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 public abstract class PipeEventStatement extends PipeEvent {
     public PipeEventStatement(IPipeHolder holder) {
@@ -31,9 +29,9 @@ public abstract class PipeEventStatement extends PipeEvent {
         public final Collection<ITriggerInternalSided> triggers;
 
         @Nonnull
-        public final EnumFacing side;
+        public final FaceInfo side;
 
-        public AddTriggerInternalSided(IPipeHolder holder, Collection<ITriggerInternalSided> triggers, @Nonnull EnumFacing side) {
+        public AddTriggerInternalSided(IPipeHolder holder, Collection<ITriggerInternalSided> triggers, @Nonnull FaceInfo side) {
             super(holder);
             this.triggers = triggers;
             this.side = side;
@@ -55,9 +53,9 @@ public abstract class PipeEventStatement extends PipeEvent {
         public final Collection<IActionInternalSided> actions;
 
         @Nonnull
-        public final EnumFacing side;
+        public final FaceInfo side;
 
-        public AddActionInternalSided(IPipeHolder holder, Collection<IActionInternalSided> actions, @Nonnull EnumFacing side) {
+        public AddActionInternalSided(IPipeHolder holder, Collection<IActionInternalSided> actions, @Nonnull FaceInfo side) {
             super(holder);
             this.actions = actions;
             this.side = side;

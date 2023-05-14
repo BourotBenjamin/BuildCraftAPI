@@ -4,8 +4,7 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.fuels;
 
-import net.minecraft.item.ItemStack;
-
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface ISolidCoolant {

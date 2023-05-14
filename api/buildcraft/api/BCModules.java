@@ -7,6 +7,8 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.common.Loader;
@@ -104,10 +106,6 @@ public enum BCModules implements IBuildCraftMod {
     }
 
     public ModelResourceLocation createModelLocation(String path, String variant) {
-        return new ModelResourceLocation(getModId() + ":" + path + "#" + variant);
-    }
-
-    public ModelResourceLocation createModelLocation(String pathAndVariant) {
-        return new ModelResourceLocation(getModId() + ":" + pathAndVariant);
+        return new ModelResourceLocation(getModId(), path, variant);
     }
 }

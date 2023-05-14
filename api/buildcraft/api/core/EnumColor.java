@@ -4,20 +4,19 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.core;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 import java.util.Random;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 /** Use minecraft's EnumDyeColor in as many places as possible. */
 @Deprecated
-public enum EnumColor implements IStringSerializable {
+public enum EnumColor implements StringRepresentable {
 
     BLACK,
     RED,
@@ -46,10 +45,10 @@ public enum EnumColor implements IStringSerializable {
     public static final int[] LIGHT_HEX = { 0x181414, 0xBE2B27, 0x007F0E, 0x89502D, 0x253193, 0x7e34bf, 0x299799, 0xa0a7a7, 0x7A7A7A, 0xD97199,
         0x39D52E, 0xFFD91C, 0x66AAFF, 0xD943C6, 0xEA7835, 0xe4e4e4 };
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static ResourceLocation iconSheet;
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static TextureAtlasSprite[] brushSprites;
 
     public int getDarkHex() {
@@ -112,12 +111,12 @@ public enum EnumColor implements IStringSerializable {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getSerializedName() {
         return NAMES[ordinal()];
     }
 
     public String getLocalizedName() {
-        return I18n.translateToLocal(getTag());
+        return this.getSerializedName();/* TODO I18n.translateToLocal(getTag());*/
     }
 
     public String getDye() {
@@ -135,12 +134,12 @@ public enum EnumColor implements IStringSerializable {
         return b.toString().trim();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void registerSprites(TextureAtlasSprite[] sprites) {
         brushSprites = sprites;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public TextureAtlasSprite getSprite() {
         return brushSprites[ordinal()];
     }

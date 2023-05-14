@@ -6,8 +6,8 @@
 
 package buildcraft.api.recipes;
 
-import net.minecraft.item.crafting.Ingredient;
-
+import com.google.gson.JsonElement;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 public final class IngredientStack {
@@ -23,7 +23,7 @@ public final class IngredientStack {
         this(ingredient, 1);
     }
 
-    public static IngredientStack of(Object o) {
+    public static IngredientStack of(JsonElement o) {
         return new IngredientStack(CraftingHelper.getIngredient(o));
     }
 }

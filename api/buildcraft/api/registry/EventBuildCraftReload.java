@@ -1,16 +1,11 @@
 package buildcraft.api.registry;
 
-import java.util.Set;
+import com.google.gson.GsonBuilder;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
-
-import com.google.gson.GsonBuilder;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import java.util.Set;
 
 public abstract class EventBuildCraftReload extends Event {
 
@@ -43,7 +38,7 @@ public abstract class EventBuildCraftReload extends Event {
     }
 
     /** Fired after {@link PreLoad}, but before scripts are loaded in order to register custom type adaptors for various
-     * classes. BuildCraft itself adds adaptors for {@link ItemStack}, {@link Ingredient}, and {@link FluidStack} before
+     * classes. BuildCraft itself adds adaptors for {@link net.minecraft.world.item.ItemStack}, {@link net.minecraft.world.item.crafting.Ingredient}, and {@link FluidStack} before
      * this event is fired. */
     public static class PopulateGson extends EventBuildCraftReload {
 

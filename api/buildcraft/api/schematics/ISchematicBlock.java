@@ -1,20 +1,15 @@
 package buildcraft.api.schematics;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.storage.WorldData;
+import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import net.minecraftforge.fluids.FluidStack;
-
-import buildcraft.api.core.InvalidInputDataException;
 
 public interface ISchematicBlock {
     void init(SchematicBlockContext context);
@@ -40,20 +35,21 @@ public interface ISchematicBlock {
 
     ISchematicBlock getRotated(Rotation rotation);
 
-    boolean canBuild(World world, BlockPos blockPos);
+    boolean canBuild(WorldData world, BlockPos blockPos);
 
-    default boolean isReadyToBuild(World world, BlockPos blockPos) {
+    default boolean isReadyToBuild(WorldData world, BlockPos blockPos) {
         return true;
     }
 
-    boolean build(World world, BlockPos blockPos);
+    boolean build(WorldData world, BlockPos blockPos);
 
-    boolean buildWithoutChecks(World world, BlockPos blockPos);
+    boolean buildWithoutChecks(WorldData world, BlockPos blockPos);
 
-    boolean isBuilt(World world, BlockPos blockPos);
-
+    boolean isBuilt(WorldData world, BlockPos blockPos);
+/*
     NBTTagCompound serializeNBT();
 
-    /** @throws InvalidInputDataException If the input data wasn't correct or didn't make sense. */
+    /** @throws InvalidInputDataException If the input data wasn't correct or didn't make sense.
     void deserializeNBT(NBTTagCompound nbt) throws InvalidInputDataException;
+*/
 }

@@ -1,11 +1,8 @@
 package buildcraft.api.facades;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class FacadeAPI {
     public static final String IMC_MOD_TARGET = "buildcraftsilicon";
@@ -23,15 +20,15 @@ public final class FacadeAPI {
     }
 
     public static void disableBlock(Block block) {
-        FMLInterModComms.sendMessage(IMC_MOD_TARGET, IMC_FACADE_DISABLE, block.getRegistryName());
+        // TODO : Fix InterModComms.sendTo(IMC_MOD_TARGET, IMC_FACADE_DISABLE, block.getName());
     }
 
-    public static void mapStateToStack(IBlockState state, ItemStack stack) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString(NBT_CUSTOM_BLOCK_REG_KEY, state.getBlock().getRegistryName().toString());
-        nbt.setInteger(NBT_CUSTOM_BLOCK_META, state.getBlock().getMetaFromState(state));
-        nbt.setTag(NBT_CUSTOM_ITEM_STACK, stack.serializeNBT());
-        FMLInterModComms.sendMessage(IMC_MOD_TARGET, IMC_FACADE_CUSTOM, nbt);
+    public static void mapStateToStack(BlockState state, ItemStack stack) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString(NBT_CUSTOM_BLOCK_REG_KEY, state.getBlock().getName().toString());
+        // TODO : Useful ? nbt.putInt(NBT_CUSTOM_BLOCK_META, state.getBlock().getMetaFromState(state));
+        nbt.put(NBT_CUSTOM_ITEM_STACK, stack.serializeNBT());
+        // TODO : Fix InterModComms.sendTo(IMC_MOD_TARGET, IMC_FACADE_CUSTOM, nbt);
     }
 
     public static boolean isFacadeMessageId(String id) {

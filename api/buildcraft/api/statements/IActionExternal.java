@@ -4,9 +4,9 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.statements;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IActionExternal extends IAction {
-    void actionActivate(TileEntity target, EnumFacing side, IStatementContainer source, IStatementParameter[] parameters);
+    void actionActivate(BlockEntity target, FaceInfo side, IStatementContainer source, IStatementParameter[] parameters);
 }

@@ -1,14 +1,12 @@
 package buildcraft.api.transport.pipe;
 
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.util.EnumFacing;
-
-import net.minecraftforge.fluids.FluidStack;
 
 public abstract class PipeEventFluid extends PipeEvent {
 
@@ -27,12 +25,12 @@ public abstract class PipeEventFluid extends PipeEvent {
     }
 
     public static class TryInsert extends PipeEventFluid {
-        public final EnumFacing from;
+        public final FaceInfo from;
         /** The incoming fluidstack. Currently changing this does nothing. */
         @Nonnull
         public final FluidStack fluid;
 
-        public TryInsert(IPipeHolder holder, IFlowFluid flow, EnumFacing from, @Nonnull FluidStack fluid) {
+        public TryInsert(IPipeHolder holder, IFlowFluid flow, FaceInfo from, @Nonnull FluidStack fluid) {
             super(true, holder, flow);
             this.from = from;
             this.fluid = fluid;
@@ -48,14 +46,14 @@ public abstract class PipeEventFluid extends PipeEvent {
         /** The maximum amount of fluid that the centre pipe could accept. */
         public final int totalAcceptable;
 
-        /** Array of {@link EnumFacing#getIndex()} to the maximum amount of fluid that a given side can offer. DO NOT
+        /** Array of {@link FaceInfo#ordinal()} ()} to the maximum amount of fluid that a given side can offer. DO NOT
          * CHANGE THIS! */
         public final int[] totalOffered;
 
         // Used for checking the state
         private final int[] totalOfferedCheck;
 
-        /** Array of {@link EnumFacing#getIndex()} to the amount of fluid that the given side will actually offer to the
+        /** Array of {@link FaceInfo#ordinal()} ()} to the amount of fluid that the given side will actually offer to the
          * centre. This should *never* be larger than */
         public final int[] actuallyOffered;
 
@@ -132,7 +130,7 @@ public abstract class PipeEventFluid extends PipeEvent {
         /** The priorities of each side. Stored inversely to the values given, so a higher priority will have a lower
          * value than a lower priority. */
         private final int[] priority = new int[6];
-        private final EnumSet<EnumFacing> allowed = EnumSet.allOf(EnumFacing.class);
+        private final EnumSet<FaceInfo> allowed = EnumSet.allOf(FaceInfo.class);
 
         public SideCheck(IPipeHolder holder, IFlowFluid flow, FluidStack fluid) {
             super(holder, flow);
@@ -142,23 +140,23 @@ public abstract class PipeEventFluid extends PipeEvent {
         /** Checks to see if a side if allowed. Note that this may return true even though a later handler might
          * disallow a side, so you should only use this to skip checking a side (for example a diamond pipe might not
          * check the filters for a specific side if its already been disallowed) */
-        public boolean isAllowed(EnumFacing side) {
+        public boolean isAllowed(FaceInfo side) {
             return allowed.contains(side);
         }
 
         /** Disallows the specific side(s) from being a destination for the item. If no sides are allowed, then the
          * fluid will stay in the current pipe section. */
-        public void disallow(EnumFacing... sides) {
-            for (EnumFacing side : sides) {
+        public void disallow(FaceInfo... sides) {
+            for (FaceInfo side : sides) {
                 allowed.remove(side);
             }
         }
 
-        public void disallowAll(Collection<EnumFacing> sides) {
+        public void disallowAll(Collection<FaceInfo> sides) {
             allowed.removeAll(sides);
         }
 
-        public void disallowAllExcept(EnumFacing side) {
+        public void disallowAllExcept(FaceInfo side) {
             if (allowed.contains(side)) {
                 allowed.clear();
                 allowed.add(side);
@@ -167,7 +165,7 @@ public abstract class PipeEventFluid extends PipeEvent {
             }
         }
 
-        public void disallowAllExcept(EnumFacing... sides) {
+        public void disallowAllExcept(FaceInfo... sides) {
             switch (sides.length) {
                 case 0: {
                     allowed.clear();
@@ -190,8 +188,8 @@ public abstract class PipeEventFluid extends PipeEvent {
                     return;
                 }
                 default: {
-                    EnumSet<EnumFacing> except = EnumSet.noneOf(EnumFacing.class);
-                    for (EnumFacing face : sides) {
+                    EnumSet<FaceInfo> except = EnumSet.noneOf(FaceInfo.class);
+                    for (FaceInfo face : sides) {
                         except.add(face);
                     }
                     this.allowed.retainAll(except);
@@ -200,7 +198,7 @@ public abstract class PipeEventFluid extends PipeEvent {
             }
         }
 
-        public void disallowAllExcept(Collection<EnumFacing> sides) {
+        public void disallowAllExcept(Collection<FaceInfo> sides) {
             allowed.retainAll(sides);
         }
 
@@ -208,25 +206,25 @@ public abstract class PipeEventFluid extends PipeEvent {
             allowed.clear();
         }
 
-        public void increasePriority(EnumFacing side) {
+        public void increasePriority(FaceInfo side) {
             increasePriority(side, 1);
         }
 
-        public void increasePriority(EnumFacing side, int by) {
+        public void increasePriority(FaceInfo side, int by) {
             priority[side.ordinal()] -= by;
         }
 
-        public void decreasePriority(EnumFacing side) {
+        public void decreasePriority(FaceInfo side) {
             decreasePriority(side, 1);
         }
 
-        public void decreasePriority(EnumFacing side, int by) {
+        public void decreasePriority(FaceInfo side, int by) {
             increasePriority(side, -by);
         }
 
-        public EnumSet<EnumFacing> getOrder() {
+        public EnumSet<FaceInfo> getOrder() {
             if (allowed.isEmpty()) {
-                return EnumSet.noneOf(EnumFacing.class);
+                return EnumSet.noneOf(FaceInfo.class);
             }
             if (allowed.size() == 1) {
                 return allowed;
@@ -251,8 +249,8 @@ public abstract class PipeEventFluid extends PipeEvent {
                     continue;
                 }
                 last = current;
-                EnumSet<EnumFacing> set = EnumSet.noneOf(EnumFacing.class);
-                for (EnumFacing face : EnumFacing.VALUES) {
+                EnumSet<FaceInfo> set = EnumSet.noneOf(FaceInfo.class);
+                for (FaceInfo face : FaceInfo.values()) {
                     if (allowed.contains(face)) {
                         if (priority[face.ordinal()] == current) {
                             set.add(face);
@@ -263,7 +261,7 @@ public abstract class PipeEventFluid extends PipeEvent {
                     return set;
                 }
             }
-            return EnumSet.noneOf(EnumFacing.class);
+            return EnumSet.noneOf(FaceInfo.class);
         }
     }
 }

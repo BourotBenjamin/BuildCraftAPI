@@ -6,18 +6,16 @@
 
 package buildcraft.api.recipes;
 
-import java.util.Collections;
-import java.util.Set;
+import buildcraft.api.core.BuildCraftAPI;
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-
-import buildcraft.api.core.BuildCraftAPI;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @deprecated TEMPORARY CLASS DO NOT USE!
@@ -32,7 +30,7 @@ public class AssemblyRecipeBasic extends AssemblyRecipe {
         this.requiredMicroJoules = requiredMicroJoules;
         this.requiredStacks = ImmutableSet.copyOf(requiredStacks);
         this.output = ImmutableSet.of(output);
-        setRegistryName(name);
+        register(name, this);
     }
 
     public AssemblyRecipeBasic(String name, long requiredMicroJoules, ImmutableSet<IngredientStack> requiredStacks, @Nonnull ItemStack output) {
@@ -45,23 +43,23 @@ public class AssemblyRecipeBasic extends AssemblyRecipe {
 
     @Override
     public Set<ItemStack> getOutputs(NonNullList<ItemStack> inputs) {
-        if (requiredStacks.stream().allMatch((definition) -> inputs.stream().anyMatch((stack) -> !stack.isEmpty() && definition.ingredient.apply(stack) && stack.getCount() >= definition.count)))
+        if (requiredStacks.stream().allMatch((definition) -> inputs.stream().anyMatch((stack) -> !stack.isEmpty() && definition.ingredient.test(stack) && stack.getCount() >= definition.count)))
             return output;
         return Collections.emptySet();
     }
 
     @Override
     public Set<ItemStack> getOutputPreviews() {
-        return output;
+        return null;
     }
 
     @Override
-    public Set<IngredientStack> getInputsFor(@Nonnull ItemStack output) {
-        return requiredStacks;
+    public Set<IngredientStack> getInputsFor(@NotNull ItemStack output) {
+        return null;
     }
 
     @Override
-    public long getRequiredMicroJoulesFor(@Nonnull ItemStack output) {
-        return requiredMicroJoules;
+    public long getRequiredMicroJoulesFor(@NotNull ItemStack output) {
+        return 0;
     }
 }

@@ -7,7 +7,7 @@ package buildcraft.api.fuels;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface IFuel {
-    /** @return The input fluid. The {@link FluidStack#amount} is ignored. */
+    /** @return The input fluid. The {@link FluidStack#getAmount()} is ignored. */
     FluidStack getFluid();
 
     /** @return The number of ticks that a single bucket (1000mb) of this fuel will burn for. */

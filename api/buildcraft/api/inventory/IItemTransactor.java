@@ -1,12 +1,11 @@
 package buildcraft.api.inventory;
 
+import buildcraft.api.core.IStackFilter;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-
-import buildcraft.api.core.IStackFilter;
 
 /** A simple way to define something that deals with item insertion and extraction, without caring about slots. */
 public interface IItemTransactor {

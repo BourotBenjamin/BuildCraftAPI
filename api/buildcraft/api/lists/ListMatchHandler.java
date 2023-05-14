@@ -1,10 +1,10 @@
 package buildcraft.api.lists;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 public abstract class ListMatchHandler {
     public enum Type {

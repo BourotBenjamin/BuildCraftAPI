@@ -1,64 +1,54 @@
 package buildcraft.api.transport.pluggable;
 
-import java.io.IOException;
+import buildcraft.api.transport.pipe.IPipeHolder;
+import buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.levelgen.structure.templatesystem.AxisAlignedLinearPosTest;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.network.NetworkEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import buildcraft.api.transport.pipe.IPipeHolder;
-import buildcraft.api.transport.pipe.IPipeHolder.PipeMessageReceiver;
+import java.io.IOException;
 
 public abstract class PipePluggable {
     public final PluggableDefinition definition;
     public final IPipeHolder holder;
-    public final EnumFacing side;
+    public final FaceInfo side;
 
-    public PipePluggable(PluggableDefinition definition, IPipeHolder holder, EnumFacing side) {
+    public PipePluggable(PluggableDefinition definition, IPipeHolder holder, FaceInfo side) {
         this.definition = definition;
         this.holder = holder;
         this.side = side;
     }
 
-    public NBTTagCompound writeToNbt() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        return nbt;
+    public CompoundTag writeToNbt() {
+        return new CompoundTag();
     }
 
     /** Writes the payload that will be passed into
-     * {@link PluggableDefinition#loadFromBuffer(IPipeHolder, EnumFacing, PacketBuffer)} on the client. (This is called
+     * {@link PluggableDefinition#loadFromBuffer(IPipeHolder, FaceInfo, FriendlyByteBuf)} on the client. (This is called
      * on the server and sent to the client). Note that this will be called *instead* of write and read payload. */
-    public void writeCreationPayload(PacketBuffer buffer) {
+    public void writeCreationPayload(FriendlyByteBuf buffer) {
 
     }
 
-    public void writePayload(PacketBuffer buffer, Side side) {
+    public void writePayload(FriendlyByteBuf buffer, Dist side) {
 
     }
 
-    public void readPayload(PacketBuffer buffer, Side side, MessageContext ctx) throws IOException {
+    public void readPayload(FriendlyByteBuf buffer, Dist side, NetworkEvent.Context ctx) throws IOException {
 
     }
 
@@ -69,7 +59,7 @@ public abstract class PipePluggable {
     public void onTick() {}
 
     /** @return A bounding box that will be used for collisions and raytracing. */
-    public abstract AxisAlignedBB getBoundingBox();
+    public abstract AxisAlignedLinearPosTest getBoundingBox();
 
     /** @return True if the pipe cannot connect outwards (it is blocked), or False if this does not block the pipe. */
     public boolean isBlocking() {
@@ -78,7 +68,7 @@ public abstract class PipePluggable {
 
     /** Gets the value of a specified capability key, or null if the given capability is not supported at the call time.
      * This is effectively {@link ICapabilityProvider}, but where
-     * {@link ICapabilityProvider#hasCapability(Capability, EnumFacing)} will return true when this returns a non-null
+     * {@link ICapabilityProvider#getCapability(Capability)}} will return true when this returns a non-null
      * value. */
     public <T> T getCapability(@Nonnull Capability<T> cap) {
         return null;
@@ -110,52 +100,46 @@ public abstract class PipePluggable {
         return ItemStack.EMPTY;
     }
 
-    public boolean onPluggableActivate(EntityPlayer player, RayTraceResult trace, float hitX, float hitY, float hitZ) {
+    public boolean onPluggableActivate(Player player, HitResult trace, float hitX, float hitY, float hitZ) {
         return false;
     }
-
+/*
+TODO : Useful ?
     @Nullable
     public PluggableModelKey getModelRenderKey(BlockRenderLayer layer) {
         return null;
     }
-
+*/
     /** Called if the {@link IPluggableStaticBaker} returns quads with tint indexes set to
      * <code>data * 6 + key.side.ordinal()</code>. <code>"data"</code> is passed in here as <code>"tintIndex"</code>.
      * 
      * @return The tint index to render the quad with, or -1 for default. */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public int getBlockColor(int tintIndex) {
         return -1;
     }
 
-    /** PipePluggable version of
-     * {@link Block#canBeConnectedTo(net.minecraft.world.IBlockAccess, net.minecraft.util.math.BlockPos, EnumFacing)}. */
     public boolean canBeConnected() {
         return false;
     }
 
-    /** PipePluggable version of
-     * {@link net.minecraft.block.state.IBlockState#isSideSolid(IBlockAccess, BlockPos, EnumFacing)} */
     public boolean isSideSolid() {
         return false;
     }
 
-    /** PipePluggable version of {@link Block#getExplosionResistance(World, BlockPos, Entity, Explosion)} */
     public float getExplosionResistance(@Nullable Entity exploder, Explosion explosion) {
         return 0;
     }
 
-    public boolean canConnectToRedstone(@Nullable EnumFacing to) {
+    public boolean canConnectToRedstone(@Nullable FaceInfo to) {
         return false;
     }
 
-    /** PipePluggable version of
-     * {@link net.minecraft.block.state.IBlockState#getBlockFaceShape(IBlockAccess, BlockPos, EnumFacing)} */
-    public BlockFaceShape getBlockFaceShape() {
+    /* TODO : Gone ? public BlockFaceShape getBlockFaceShape() {
         return BlockFaceShape.UNDEFINED;
-    }
+    }*/
 
-    public void onPlacedBy(EntityPlayer player) {
+    public void onPlacedBy(Player player) {
 
     }
 }

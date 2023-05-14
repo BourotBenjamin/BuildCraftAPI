@@ -1,20 +1,17 @@
 package buildcraft.api.schematics;
 
+import buildcraft.api.core.BuildCraftAPI;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.entity.EntityList;
-import net.minecraft.util.ResourceLocation;
-
-import buildcraft.api.core.BuildCraftAPI;
 
 public class SchematicEntityFactoryRegistry {
     private static final Set<SchematicEntityFactory<?>> FACTORIES = new TreeSet<>();
@@ -38,7 +35,7 @@ public class SchematicEntityFactoryRegistry {
         registerFactory(
             name,
             priority,
-            context -> entities.contains(EntityList.getKey(context.entity)),
+            context -> entities.contains(ForgeRegistries.ENTITY_TYPES.getKey(context.entity.getType())),
             supplier
         );
     }

@@ -4,19 +4,15 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.core;
 
-import java.util.HashMap;
-import java.util.Set;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import java.util.HashMap;
+import java.util.Set;
 
 public final class BuildCraftAPI {
     public static IFakePlayerProvider fakePlayerProvider;
@@ -28,10 +24,11 @@ public final class BuildCraftAPI {
     private BuildCraftAPI() {}
 
     public static String getVersion() {
-        ModContainer container = Loader.instance().getIndexedModList().get("buildcraftlib");
+        // TODO : Get Self Mod version
+        /* ModContainer container = Loader.instance().getIndexedModList().get("buildcraftlib");
         if (container != null) {
-            return container.getDisplayVersion();
-        }
+            return container.getModInfo().getVersion().toString();
+        }*/
         return "UNKNOWN VERSION";
     }
 
@@ -46,16 +43,14 @@ public final class BuildCraftAPI {
         worldProperties.put(name, property);
     }
 
-    public static boolean isSoftBlock(World world, BlockPos pos) {
+    public static boolean isSoftBlock(Level world, BlockPos pos) {
         return worldProperties.get("soft").get(world, pos);
     }
 
     public static ResourceLocation nameToResourceLocation(String name) {
-        if (name.indexOf(':') > 0) return new ResourceLocation(name);
-        ModContainer modContainer = Loader.instance().activeModContainer();
-        if (modContainer == null) {
+        if (name.indexOf(':') > 0) 
+            return new ResourceLocation(name);
+        else
             throw new IllegalStateException("Illegal recipe name " + name + ". Provide domain id to register it correctly.");
-        }
-        return new ResourceLocation(modContainer.getModId(), name);
     }
 }

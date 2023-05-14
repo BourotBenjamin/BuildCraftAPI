@@ -2,15 +2,16 @@ package buildcraft.api.transport.pluggable;
 
 import java.util.Objects;
 
+import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 
 public abstract class PluggableModelKey {
     public final BlockRenderLayer layer;
-    public final EnumFacing side;
+    public final FaceInfo side;
     private final int hash;
 
-    public PluggableModelKey(BlockRenderLayer layer, EnumFacing side) {
+    public PluggableModelKey(BlockRenderLayer layer, FaceInfo side) {
         if (layer != BlockRenderLayer.CUTOUT && layer != BlockRenderLayer.TRANSLUCENT) {
             throw new IllegalArgumentException("Can only use CUTOUT or TRANSLUCENT at the moment (was " + layer + ")");
         }

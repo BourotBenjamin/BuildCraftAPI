@@ -4,18 +4,17 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.statements;
 
-import java.util.Collection;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import java.util.Collection;
 
 public interface ITriggerProvider {
     void addInternalTriggers(Collection<ITriggerInternal> triggers, IStatementContainer container);
 
-    void addInternalSidedTriggers(Collection<ITriggerInternalSided> triggers, IStatementContainer container, @Nonnull EnumFacing side);
+    void addInternalSidedTriggers(Collection<ITriggerInternalSided> triggers, IStatementContainer container, @Nonnull FaceInfo side);
 
     /** Returns the list of triggers available to a gate next to the given block. */
-    void addExternalTriggers(Collection<ITriggerExternal> triggers, @Nonnull EnumFacing side, TileEntity tile);
+    void addExternalTriggers(Collection<ITriggerExternal> triggers, @Nonnull FaceInfo side, BlockEntity tile);
 }

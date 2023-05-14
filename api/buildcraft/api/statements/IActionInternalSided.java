@@ -1,7 +1,7 @@
 package buildcraft.api.statements;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.FaceInfo;
 
 public interface IActionInternalSided extends IAction {
-    void actionActivate(EnumFacing side, IStatementContainer source, IStatementParameter[] parameters);
+    void actionActivate(FaceInfo side, IStatementContainer source, IStatementParameter[] parameters);
 }

@@ -1,8 +1,7 @@
 package buildcraft.api.transport.pipe;
 
-import net.minecraft.util.EnumFacing;
-
 import buildcraft.api.mj.MjAPI;
+import net.minecraft.client.renderer.FaceInfo;
 
 public abstract class PipeEventPower extends PipeEvent {
     public final IFlowPower flow;
@@ -74,18 +73,18 @@ public abstract class PipeEventPower extends PipeEvent {
     }
 
     public static class PrimaryDirection extends PipeEventPower {
-        private EnumFacing facing;
+        private FaceInfo facing;
 
-        public PrimaryDirection(IPipeHolder holder, IFlowPower flow, EnumFacing facing) {
+        public PrimaryDirection(IPipeHolder holder, IFlowPower flow, FaceInfo facing) {
             super(holder, flow);
             this.facing = facing;
         }
 
-        public EnumFacing getFacing() {
+        public FaceInfo getFacing() {
             return facing;
         }
 
-        public void setFacing(EnumFacing facing) {
+        public void setFacing(FaceInfo facing) {
             this.facing = facing;
         }
     }

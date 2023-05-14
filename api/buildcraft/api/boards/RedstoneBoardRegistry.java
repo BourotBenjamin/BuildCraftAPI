@@ -4,9 +4,9 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.boards;
 
-import java.util.Collection;
+import net.minecraft.nbt.CompoundTag;
 
-import net.minecraft.nbt.NBTTagCompound;
+import java.util.Collection;
 
 public abstract class RedstoneBoardRegistry {
 
@@ -22,7 +22,7 @@ public abstract class RedstoneBoardRegistry {
 
     public abstract RedstoneBoardRobotNBT getEmptyRobotBoard();
 
-    public abstract RedstoneBoardNBT<?> getRedstoneBoard(NBTTagCompound nbt);
+    public abstract RedstoneBoardNBT<?> getRedstoneBoard(CompoundTag nbt);
 
     public abstract RedstoneBoardNBT<?> getRedstoneBoard(String id);
 

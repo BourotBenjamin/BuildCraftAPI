@@ -4,15 +4,15 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.statements;
 
-import javax.annotation.Nullable;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import javax.annotation.Nullable;
 
 /** This is implemented by objects containing Statements, such as Gates and TileEntities. */
 public interface IStatementContainer {
-    TileEntity getTile();
+    BlockEntity getTile();
 
     @Nullable
-    TileEntity getNeighbourTile(EnumFacing side);
+    BlockEntity getNeighbourTile(FaceInfo side);
 }

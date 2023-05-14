@@ -1,14 +1,14 @@
 package buildcraft.api.enums;
 
+import buildcraft.api.BCItems;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IStringSerializable;
-
-import buildcraft.api.BCItems;
-
-public enum EnumRedstoneChipset implements IStringSerializable {
+public enum EnumRedstoneChipset implements StringRepresentable {
     RED,
     IRON,
     GOLD,
@@ -22,8 +22,9 @@ public enum EnumRedstoneChipset implements IStringSerializable {
         if (chipset == null) {
             return ItemStack.EMPTY;
         }
-
-        return new ItemStack(chipset, stackSize, ordinal());
+        ItemStack itemStack = new ItemStack(chipset, stackSize);
+        itemStack.setDamageValue(ordinal());
+        return itemStack;
     }
 
     public ItemStack getStack() {
@@ -34,7 +35,7 @@ public enum EnumRedstoneChipset implements IStringSerializable {
         if (stack == null) {
             return RED;
         }
-        return fromOrdinal(stack.getMetadata());
+        return fromOrdinal(stack.getDamageValue());
     }
 
     public static EnumRedstoneChipset fromOrdinal(int ordinal) {
@@ -45,7 +46,7 @@ public enum EnumRedstoneChipset implements IStringSerializable {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getSerializedName() {
         return name;
     }
 }

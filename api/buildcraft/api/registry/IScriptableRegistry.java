@@ -1,16 +1,14 @@
 package buildcraft.api.registry;
 
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import net.minecraft.resources.ResourceLocation;
 
-import net.minecraft.util.ResourceLocation;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Set;
 
 /** A type of {@link IReloadableRegistry} that can be configured with buildcraft style simple scripts. A full
  * description can be found [...] */

@@ -1,46 +1,41 @@
 package buildcraft.api.core;
 
+import com.google.common.collect.Maps;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.StringRepresentable;
+
 import java.util.Locale;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
-
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTPrimitive;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IStringSerializable;
-
-public enum EnumPipePart implements IStringSerializable {
-    DOWN(EnumFacing.DOWN),
-    UP(EnumFacing.UP),
-    NORTH(EnumFacing.NORTH),
-    SOUTH(EnumFacing.SOUTH),
-    WEST(EnumFacing.WEST),
-    EAST(EnumFacing.EAST),
+public enum EnumPipePart implements StringRepresentable {
+    DOWN(FaceInfo.DOWN),
+    UP(FaceInfo.UP),
+    NORTH(FaceInfo.NORTH),
+    SOUTH(FaceInfo.SOUTH),
+    WEST(FaceInfo.WEST),
+    EAST(FaceInfo.EAST),
     /** CENTER, UNKNOWN and ALL are all valid uses of this. */
     CENTER(null);
 
     public static final EnumPipePart[] VALUES = values();
-    public static final EnumPipePart[] FACES;
-    public static final EnumPipePart[] HORIZONTALS;
 
-    private static final Map<EnumFacing, EnumPipePart> facingMap = Maps.newEnumMap(EnumFacing.class);
+    private static final Map<FaceInfo, EnumPipePart> facingMap = Maps.newEnumMap(FaceInfo.class);
     private static final Map<String, EnumPipePart> nameMap = Maps.newHashMap();
     private static final int MAX_VALUES = values().length;
 
-    public final EnumFacing face;
+    public final FaceInfo face;
 
     static {
         for (EnumPipePart part : values()) {
             nameMap.put(part.name(), part);
             if (part.face != null) facingMap.put(part.face, part);
         }
-        FACES = fromFacingArray(EnumFacing.VALUES);
-        HORIZONTALS = fromFacingArray(EnumFacing.HORIZONTALS);
     }
 
-    private static EnumPipePart[] fromFacingArray(EnumFacing... faces) {
+    private static EnumPipePart[] fromFacingArray(FaceInfo... faces) {
         EnumPipePart[] arr = new EnumPipePart[faces.length];
         for (int i = 0; i < faces.length; i++) {
             arr[i] = fromFacing(faces[i]);
@@ -48,19 +43,15 @@ public enum EnumPipePart implements IStringSerializable {
         return arr;
     }
 
-    public static int ordinal(EnumFacing face) {
+    public static int ordinal(FaceInfo face) {
         return face == null ? 6 : face.ordinal();
     }
 
-    public static EnumPipePart fromFacing(EnumFacing face) {
+    public static EnumPipePart fromFacing(FaceInfo face) {
         if (face == null) {
             return EnumPipePart.CENTER;
         }
         return facingMap.get(face);
-    }
-
-    public static EnumPipePart[] validFaces() {
-        return FACES;
     }
 
     public static EnumPipePart fromMeta(int meta) {
@@ -70,56 +61,60 @@ public enum EnumPipePart implements IStringSerializable {
         return VALUES[meta];
     }
 
-    EnumPipePart(EnumFacing face) {
+    EnumPipePart(FaceInfo face) {
         this.face = face;
     }
 
     public int getIndex() {
         if (face == null) return 6;
-        return face.getIndex();
+        return face.ordinal();
     }
 
     @Override
-    public String getName() {
+    public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
     }
 
     public EnumPipePart next() {
-        switch (this) {
-            case DOWN:
-                return EAST;
-            case EAST:
-                return NORTH;
-            case NORTH:
-                return SOUTH;
-            case SOUTH:
-                return UP;
-            case UP:
-                return WEST;
-            case WEST:
-                return DOWN;
-            default:
-                return DOWN;
-        }
+        return switch (this) {
+            case DOWN -> EAST;
+            case EAST -> NORTH;
+            case NORTH -> SOUTH;
+            case SOUTH -> UP;
+            case UP -> WEST;
+            case WEST -> DOWN;
+            default -> DOWN;
+        };
+    }
+
+    public FaceInfo opposite(FaceInfo face) {
+        return switch (face) {
+            case DOWN -> FaceInfo.UP;
+            case UP -> FaceInfo.DOWN;
+            case NORTH -> FaceInfo.SOUTH;
+            case SOUTH -> FaceInfo.NORTH;
+            case EAST -> FaceInfo.WEST;
+            default -> FaceInfo.EAST;
+        };
     }
 
     public EnumPipePart opposite() {
         if (this == CENTER) {
             return CENTER;
         }
-        return fromFacing(face.getOpposite());
+        return fromFacing(opposite(face));
     }
 
-    public static EnumPipePart readFromNBT(NBTBase base) {
+    public static EnumPipePart readFromNBT(Tag base) {
         if (base == null) {
             return CENTER;
         }
-        if (base instanceof NBTTagString) {
-            NBTTagString nbtString = (NBTTagString) base;
-            String string = nbtString.getString();
+        if (base instanceof StringTag) {
+            StringTag nbtString = (StringTag) base;
+            String string = nbtString.getAsString();
             return nameMap.getOrDefault(string, CENTER);
         } else {
-            byte ord = ((NBTPrimitive) base).getByte();
+            byte ord = ((ByteTag) base).getAsByte();
             if (ord < 0 || ord > 6) {
                 return CENTER;
             }
@@ -127,7 +122,7 @@ public enum EnumPipePart implements IStringSerializable {
         }
     }
 
-    public NBTBase writeToNBT() {
-        return new NBTTagString(name());
+    public Tag writeToNBT() {
+        return StringTag.valueOf(name());
     }
 }

@@ -1,7 +1,7 @@
 package buildcraft.api.statements;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.FaceInfo;
 
 public interface ITriggerInternalSided extends ITrigger {
-    boolean isTriggerActive(EnumFacing side, IStatementContainer source, IStatementParameter[] parameters);
+    boolean isTriggerActive(FaceInfo side, IStatementContainer source, IStatementParameter[] parameters);
 }

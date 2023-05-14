@@ -4,10 +4,10 @@
  * of the license located in http://www.mod-buildcraft.com/MMPL-1.0.txt */
 package buildcraft.api.core;
 
-import javax.annotation.Nonnull;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import javax.annotation.Nonnull;
 
 /** This interface provides a convenient means of dealing with entire classes of items without having to specify each
  * item individually. */

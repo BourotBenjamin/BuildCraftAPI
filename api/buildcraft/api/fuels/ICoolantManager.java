@@ -4,12 +4,11 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.fuels;
 
-import java.util.Collection;
-
-import net.minecraft.item.ItemStack;
-
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Collection;
 
 public interface ICoolantManager {
     ICoolant addCoolant(ICoolant coolant);
